@@ -1,0 +1,45 @@
+$ dotnet test --collect:"XPlat Code Coverage"   (coverlet, format Cobertura)
+
+Global : lignes 98.8 %  |  branches 93.2 %
+
+## MoteurRegles.Core : lignes 98.3 %, branches 100.0 %
+   MoteurRegles.Core.MoteurDeRegles`2                              50/50  100.0 %  
+   MoteurRegles.Core.TraceRegle`1                                  14/16   87.5 %  non couvert: RapportEvaluation.cs:24, RapportEvaluation.cs:25
+   MoteurRegles.Core.RapportEvaluation`2                           18/18  100.0 %  
+   MoteurRegles.Core.Regle`2                                       17/17  100.0 %  
+   MoteurRegles.Core.Regle                                          1/1   100.0 %  
+   MoteurRegles.Core.ConstructeurRegle`2                           35/35  100.0 %  
+   MoteurRegles.Core.RegleBase`2                                    3/3   100.0 %  
+   MoteurRegles.Core.Conditions.Condition`1                        10/11   90.9 %  non couvert: Condition.cs:25
+   MoteurRegles.Core.Conditions.ConditionEt`1                       3/3   100.0 %  
+   MoteurRegles.Core.Conditions.ConditionOu`1                       3/3   100.0 %  
+   MoteurRegles.Core.Conditions.ConditionNon`1                      3/3   100.0 %  
+   MoteurRegles.Core.Conditions.ConditionExtensions                14/14  100.0 %  
+
+## MoteurRegles.Remises : lignes 99.0 %, branches 91.0 %
+   MoteurRegles.Remises.PolitiqueRemise                             3/3   100.0 %  
+   MoteurRegles.Remises.DecisionRemise                             10/11   90.9 %  non couvert: CalculateurRemise.cs:20
+   MoteurRegles.Remises.CalculateurRemise                          60/61   98.4 %  non couvert: CalculateurRemise.cs:122
+   MoteurRegles.Remises.ServiceRemise                               5/5   100.0 %  
+   MoteurRegles.Remises.CatalogueReglesRemise                      18/18  100.0 %  
+   MoteurRegles.Remises.Regles.RegleRemise                          3/3   100.0 %  
+   MoteurRegles.Remises.Regles.RegleEmploye                         7/7   100.0 %  
+   MoteurRegles.Remises.Regles.RegleClientPremium                   7/7   100.0 %  
+   MoteurRegles.Remises.Regles.RegleClientFidele                    8/8   100.0 %  
+   MoteurRegles.Remises.Regles.RegleAnciennete                      8/8   100.0 %  
+   MoteurRegles.Remises.Regles.RegleGrosseCommande                  8/8   100.0 %  
+   MoteurRegles.Remises.Regles.RegleQuantiteCategorie              16/16  100.0 %  
+   MoteurRegles.Remises.Regles.RegleCodePromo                      28/28  100.0 %  
+   MoteurRegles.Remises.Regles.RegleClientAvecImpayes               6/6   100.0 %  
+   MoteurRegles.Remises.Regles.RegleMontantMinimum                 10/10  100.0 %  
+   MoteurRegles.Remises.Modele.Client                               7/7   100.0 %  
+   MoteurRegles.Remises.Modele.LigneCommande                        6/7    85.7 %  non couvert: Commande.cs:20
+   MoteurRegles.Remises.Modele.Commande                             9/9   100.0 %  
+   MoteurRegles.Remises.Modele.Remise                              38/38  100.0 %  
+   MoteurRegles.Remises.Configuration.ConfigurationRemises          4/4   100.0 %  
+   MoteurRegles.Remises.Configuration.FabriqueRegles               97/97  100.0 %  
+   MoteurRegles.Remises.Configuration.ConfigurationInvalideException   1/1   100.0 %  
+   MoteurRegles.Remises.Configuration.ResultatAttendu               1/1   100.0 %  
+   MoteurRegles.Remises.Configuration.CasCommande                   1/2    50.0 %  non couvert: JeuDeDonnees.cs:13
+   MoteurRegles.Remises.Configuration.ChargeurJeuDeDonnees         28/28  100.0 %  
+

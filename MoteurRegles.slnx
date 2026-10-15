@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MoteurRegles.App/MoteurRegles.App.csproj" />
+    <Project Path="src/MoteurRegles.Core/MoteurRegles.Core.csproj" />
+    <Project Path="src/MoteurRegles.Remises/MoteurRegles.Remises.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MoteurRegles.Tests/MoteurRegles.Tests.csproj" />
+  </Folder>
+</Solution>

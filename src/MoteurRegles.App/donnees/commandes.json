@@ -1,0 +1,118 @@
+{
+  "clients": [
+    { "id": "C01", "nom": "Alice Martin",  "categorie": "Standard", "dateInscription": "2025-03-10", "nombreCommandesPassees": 2,  "aDesImpayes": false },
+    { "id": "C02", "nom": "Bruno Keller",  "categorie": "Standard", "dateInscription": "2024-06-01", "nombreCommandesPassees": 4,  "aDesImpayes": true },
+    { "id": "C03", "nom": "Chloé Favre",   "categorie": "Standard", "dateInscription": "2026-10-01", "nombreCommandesPassees": 0,  "aDesImpayes": false },
+    { "id": "C04", "nom": "David Rossi",   "categorie": "Standard", "dateInscription": "2024-01-15", "nombreCommandesPassees": 15, "aDesImpayes": false },
+    { "id": "C05", "nom": "Emma Dubois",   "categorie": "Premium",  "dateInscription": "2024-05-20", "nombreCommandesPassees": 12, "aDesImpayes": false },
+    { "id": "C06", "nom": "Farid Benali",  "categorie": "Premium",  "dateInscription": "2021-02-01", "nombreCommandesPassees": 40, "aDesImpayes": false },
+    { "id": "C07", "nom": "Gaëlle Morel",  "categorie": "Employe",  "dateInscription": "2022-09-01", "nombreCommandesPassees": 11, "aDesImpayes": false },
+    { "id": "C08", "nom": "Hugo Lambert",  "categorie": "Standard", "dateInscription": "2025-11-11", "nombreCommandesPassees": 3,  "aDesImpayes": false }
+  ],
+  "commandes": [
+    {
+      "numero": "CMD-001", "date": "2026-10-05", "clientId": "C01",
+      "lignes": [
+        { "reference": "STY-01", "libelle": "Stylo bille", "categorie": "Papeterie", "prixUnitaire": 4.50, "quantite": 2 },
+        { "reference": "CAH-01", "libelle": "Cahier A4", "categorie": "Papeterie", "prixUnitaire": 12.00, "quantite": 1 }
+      ],
+      "attendu": { "eligible": false, "montantRemise": 0, "commentaire": "Montant brut 21.00 < minimum 30.00" }
+    },
+    {
+      "numero": "CMD-002", "date": "2026-10-05", "clientId": "C02",
+      "lignes": [
+        { "reference": "CHA-01", "libelle": "Chaise de bureau", "categorie": "Mobilier", "prixUnitaire": 650.00, "quantite": 1 }
+      ],
+      "attendu": { "eligible": false, "montantRemise": 0, "commentaire": "Impayés : exclusion, les autres règles sont ignorées" }
+    },
+    {
+      "numero": "CMD-003", "date": "2026-10-06", "clientId": "C03", "codePromo": "bienvenue10",
+      "lignes": [
+        { "reference": "SAC-01", "libelle": "Sac à dos", "categorie": "Bagagerie", "prixUnitaire": 79.90, "quantite": 1 },
+        { "reference": "AGE-01", "libelle": "Agenda 2027", "categorie": "Papeterie", "prixUnitaire": 40.10, "quantite": 1 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 10.00, "commentaire": "Code de bienvenue (casse ignorée), 1re commande" }
+    },
+    {
+      "numero": "CMD-004", "date": "2026-10-07", "clientId": "C04",
+      "lignes": [
+        { "reference": "CAL-01", "libelle": "Calculatrice", "categorie": "Electronique", "prixUnitaire": 89.00, "quantite": 1 },
+        { "reference": "CLA-01", "libelle": "Classeur", "categorie": "Bureau", "prixUnitaire": 18.50, "quantite": 6 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 10.00, "commentaire": "Fidélité 5 % de 200.00" }
+    },
+    {
+      "numero": "CMD-005", "date": "2026-10-08", "clientId": "C05",
+      "lignes": [
+        { "reference": "ECR-27", "libelle": "Écran 27 pouces", "categorie": "Electronique", "prixUnitaire": 329.00, "quantite": 1 },
+        { "reference": "BUR-01", "libelle": "Bureau réglable", "categorie": "Mobilier", "prixUnitaire": 499.00, "quantite": 1 },
+        { "reference": "HDMI-2", "libelle": "Câble HDMI 2 m", "categorie": "Electronique", "prixUnitaire": 16.00, "quantite": 2 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 172.00, "commentaire": "Premium 10 + fidélité 5 + gros montant 5 = 20 % de 860.00" }
+    },
+    {
+      "numero": "CMD-006", "date": "2026-10-08", "clientId": "C06",
+      "lignes": [
+        { "reference": "IMP-01", "libelle": "Imprimante laser", "categorie": "Electronique", "prixUnitaire": 449.00, "quantite": 1 },
+        { "reference": "RAM-A4", "libelle": "Ramette papier A4", "categorie": "Papeterie", "prixUnitaire": 7.90, "quantite": 10 },
+        { "reference": "STY-02", "libelle": "Stylo gel", "categorie": "Papeterie", "prixUnitaire": 1.85, "quantite": 12 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 165.05, "commentaire": "10+5+3+5+8 = 31 % plafonné à 30 % de 550.20 = 165.06, arrondi 165.05" }
+    },
+    {
+      "numero": "CMD-007", "date": "2026-10-09", "clientId": "C07",
+      "lignes": [
+        { "reference": "SAC-01", "libelle": "Sac à dos", "categorie": "Bagagerie", "prixUnitaire": 79.90, "quantite": 1 },
+        { "reference": "CAS-01", "libelle": "Casque audio", "categorie": "Electronique", "prixUnitaire": 149.00, "quantite": 1 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 45.80, "commentaire": "Collaborateur 20 % (45.78) > cumul fidélité+ancienneté 8 % (18.31)" }
+    },
+    {
+      "numero": "CMD-008", "date": "2026-10-20", "clientId": "C04", "codePromo": "AUTOMNE15",
+      "lignes": [
+        { "reference": "LAM-01", "libelle": "Lampe de bureau", "categorie": "Mobilier", "prixUnitaire": 64.50, "quantite": 2 },
+        { "reference": "TAP-01", "libelle": "Tapis de souris", "categorie": "Bureau", "prixUnitaire": 12.00, "quantite": 3 },
+        { "reference": "ORG-01", "libelle": "Organiseur de bureau", "categorie": "Bureau", "prixUnitaire": 135.00, "quantite": 1 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 45.00, "commentaire": "AUTOMNE15 exclusif (45.00) > fidélité 5 % (15.00)" }
+    },
+    {
+      "numero": "CMD-009", "date": "2026-09-10", "clientId": "C08", "codePromo": "AUTOMNE15",
+      "lignes": [
+        { "reference": "AGE-01", "libelle": "Agenda 2027", "categorie": "Papeterie", "prixUnitaire": 40.10, "quantite": 2 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 0, "commentaire": "Code AUTOMNE15 utilisé avant le début de la campagne" }
+    },
+    {
+      "numero": "CMD-010", "date": "2026-11-02", "clientId": "C05", "codePromo": "AUTOMNE15",
+      "lignes": [
+        { "reference": "CHA-02", "libelle": "Chaise ergonomique", "categorie": "Mobilier", "prixUnitaire": 590.00, "quantite": 1 },
+        { "reference": "REP-01", "libelle": "Repose-pieds", "categorie": "Mobilier", "prixUnitaire": 110.00, "quantite": 1 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 140.00, "commentaire": "Cumul 20 % (140.00) > AUTOMNE15 exclusif (105.00)" }
+    },
+    {
+      "numero": "CMD-011", "date": "2026-10-10", "clientId": "C01", "codePromo": "PROMO99",
+      "lignes": [
+        { "reference": "CAR-01", "libelle": "Cartouche d'encre", "categorie": "Electronique", "prixUnitaire": 34.75, "quantite": 2 },
+        { "reference": "CAH-02", "libelle": "Cahier A5", "categorie": "Papeterie", "prixUnitaire": 13.00, "quantite": 2 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 0, "commentaire": "Code promo inconnu : aucune remise" }
+    },
+    {
+      "numero": "CMD-012", "date": "2026-10-11", "clientId": "C08", "codePromo": "BIENVENUE10",
+      "lignes": [
+        { "reference": "TRO-01", "libelle": "Trousse", "categorie": "Papeterie", "prixUnitaire": 15.00, "quantite": 1 },
+        { "reference": "CAH-01", "libelle": "Cahier A4", "categorie": "Papeterie", "prixUnitaire": 15.00, "quantite": 2 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 0, "commentaire": "BIENVENUE10 refusé : le client a déjà passé 3 commandes" }
+    },
+    {
+      "numero": "CMD-013", "date": "2026-10-12", "clientId": "C04",
+      "lignes": [
+        { "reference": "BUR-02", "libelle": "Bureau d'angle", "categorie": "Mobilier", "prixUnitaire": 500.00, "quantite": 1 }
+      ],
+      "attendu": { "eligible": true, "montantRemise": 50.00, "commentaire": "Seuil gros montant atteint pile (500.00) : 5 + 5 = 10 %" }
+    }
+  ]
+}

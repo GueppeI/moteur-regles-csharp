@@ -1,0 +1,5 @@
+{
+  "regles": [
+    { "type": "Fidelite", "taux": 5 }
+  ]
+}

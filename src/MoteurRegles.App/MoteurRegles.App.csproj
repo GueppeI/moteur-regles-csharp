@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>moteur-remises</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MoteurRegles.Core\MoteurRegles.Core.csproj" />
+    <ProjectReference Include="..\MoteurRegles.Remises\MoteurRegles.Remises.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="donnees\*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

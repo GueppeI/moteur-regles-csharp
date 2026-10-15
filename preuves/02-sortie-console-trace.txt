@@ -1,0 +1,278 @@
+$ dotnet run --project src/MoteurRegles.App -- --trace
+
+══════════════════════════════════════════════════════════════════════
+ MOTEUR DE RÈGLES — Éligibilité à une remise
+══════════════════════════════════════════════════════════════════════
+ Règles : regles.json   Commandes : commandes.json
+ Politique : taux cumulé max 30 %, arrondi 5 ct : oui
+
+ Règles actives (ordre d'évaluation) :
+     0  EXCL-IMPAYES             Client avec factures impayées  [arrêt]
+    10  EXCL-MONTANT-MIN         Montant brut inférieur à 30.00 CHF  [arrêt]
+    40  CLIENT-EMPLOYE           Remise collaborateur 20 %
+    50  CLIENT-PREMIUM           Client Premium 10 %
+    50  CLIENT-FIDELE            Fidélité (≥ 10 commandes) 5 %
+    50  CLIENT-ANCIENNETE        Ancienneté (≥ 3 ans) 3 %
+    60  CMD-GROS-MONTANT         Commande ≥ 500.00 CHF : 5 %
+    60  CMD-VOLUME-PAPETERIE     ≥ 4 articles « Papeterie » : 8 %
+    70  PROMO-BIENVENUE10        Code promo BIENVENUE10
+    70  PROMO-AUTOMNE15          Code promo AUTOMNE15
+
+──────────────────────────────────────────────────────────────────────
+ CMD-001  05.10.2026  Alice Martin (Standard, 2 cmd)
+   Montant brut      :      21.00 CHF
+   Décision          : NON ÉLIGIBLE
+   ℹ Non éligible : montant brut 21.00 CHF < minimum 30.00 CHF
+   Remise            :       0.00 CHF (0 %)
+   Montant net       :      21.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [Appliquee    ] EXCL-MONTANT-MIN       → EXCLUSION : montant brut 21.00 CHF < minimum 30.00 CHF
+     [Ignoree      ] CLIENT-EMPLOYE         (évaluation arrêtée par EXCL-MONTANT-MIN)
+     [Ignoree      ] CLIENT-PREMIUM         (évaluation arrêtée par EXCL-MONTANT-MIN)
+     [Ignoree      ] CLIENT-FIDELE          (évaluation arrêtée par EXCL-MONTANT-MIN)
+     [Ignoree      ] CLIENT-ANCIENNETE      (évaluation arrêtée par EXCL-MONTANT-MIN)
+     [Ignoree      ] CMD-GROS-MONTANT       (évaluation arrêtée par EXCL-MONTANT-MIN)
+     [Ignoree      ] CMD-VOLUME-PAPETERIE   (évaluation arrêtée par EXCL-MONTANT-MIN)
+     [Ignoree      ] PROMO-BIENVENUE10      (évaluation arrêtée par EXCL-MONTANT-MIN)
+     [Ignoree      ] PROMO-AUTOMNE15        (évaluation arrêtée par EXCL-MONTANT-MIN)
+   Attendu           : OK (Montant brut 21.00 < minimum 30.00)
+──────────────────────────────────────────────────────────────────────
+ CMD-002  05.10.2026  Bruno Keller (Standard, 4 cmd)
+   Montant brut      :     650.00 CHF
+   Décision          : NON ÉLIGIBLE
+   ℹ Non éligible : le client C02 a des factures impayées
+   Remise            :       0.00 CHF (0 %)
+   Montant net       :     650.00 CHF
+   Trace :
+     [Appliquee    ] EXCL-IMPAYES           → EXCLUSION : le client C02 a des factures impayées
+     [Ignoree      ] EXCL-MONTANT-MIN       (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] CLIENT-EMPLOYE         (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] CLIENT-PREMIUM         (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] CLIENT-FIDELE          (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] CLIENT-ANCIENNETE      (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] CMD-GROS-MONTANT       (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] CMD-VOLUME-PAPETERIE   (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] PROMO-BIENVENUE10      (évaluation arrêtée par EXCL-IMPAYES)
+     [Ignoree      ] PROMO-AUTOMNE15        (évaluation arrêtée par EXCL-IMPAYES)
+   Attendu           : OK (Impayés : exclusion, les autres règles sont ignorées)
+──────────────────────────────────────────────────────────────────────
+ CMD-003  06.10.2026  Chloé Favre (Standard, 0 cmd)  code « bienvenue10 »
+   Montant brut      :     120.00 CHF
+   ✔ retenue         : -10.00 CHF : code BIENVENUE10
+   Remise            :      10.00 CHF (8.33 %)
+   Montant net       :     110.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [NonApplicable] CLIENT-PREMIUM
+     [NonApplicable] CLIENT-FIDELE
+     [NonApplicable] CLIENT-ANCIENNETE
+     [NonApplicable] CMD-GROS-MONTANT
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [Appliquee    ] PROMO-BIENVENUE10      → -10.00 CHF : code BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (Code de bienvenue (casse ignorée), 1re commande)
+──────────────────────────────────────────────────────────────────────
+ CMD-004  07.10.2026  David Rossi (Standard, 15 cmd)
+   Montant brut      :     200.00 CHF
+   ✔ retenue         : -5 % : fidélité (15 commandes)
+   Remise            :      10.00 CHF (5 %)
+   Montant net       :     190.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [NonApplicable] CLIENT-PREMIUM
+     [Appliquee    ] CLIENT-FIDELE          → -5 % : fidélité (15 commandes)
+     [NonApplicable] CLIENT-ANCIENNETE
+     [NonApplicable] CMD-GROS-MONTANT
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (Fidélité 5 % de 200.00)
+──────────────────────────────────────────────────────────────────────
+ CMD-005  08.10.2026  Emma Dubois (Premium, 12 cmd)
+   Montant brut      :     860.00 CHF
+   ✔ retenue         : -10 % : client Premium
+   ✔ retenue         : -5 % : fidélité (12 commandes)
+   ✔ retenue         : -5 % : commande ≥ 500 CHF
+   Remise            :     172.00 CHF (20 %)
+   Montant net       :     688.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [Appliquee    ] CLIENT-PREMIUM         → -10 % : client Premium
+     [Appliquee    ] CLIENT-FIDELE          → -5 % : fidélité (12 commandes)
+     [NonApplicable] CLIENT-ANCIENNETE
+     [Appliquee    ] CMD-GROS-MONTANT       → -5 % : commande ≥ 500 CHF
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (Premium 10 + fidélité 5 + gros montant 5 = 20 % de 860.00)
+──────────────────────────────────────────────────────────────────────
+ CMD-006  08.10.2026  Farid Benali (Premium, 40 cmd)
+   Montant brut      :     550.20 CHF
+   ✔ retenue         : -10 % : client Premium
+   ✔ retenue         : -5 % : fidélité (40 commandes)
+   ✔ retenue         : -3 % : ancienneté (client depuis le 01.02.2021)
+   ✔ retenue         : -5 % : commande ≥ 500 CHF
+   ✔ retenue         : -8 % : 22 articles Papeterie
+   ℹ Taux cumulé 31 % plafonné à 30 %.
+   Remise            :     165.05 CHF (30 %)
+   Montant net       :     385.15 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [Appliquee    ] CLIENT-PREMIUM         → -10 % : client Premium
+     [Appliquee    ] CLIENT-FIDELE          → -5 % : fidélité (40 commandes)
+     [Appliquee    ] CLIENT-ANCIENNETE      → -3 % : ancienneté (client depuis le 01.02.2021)
+     [Appliquee    ] CMD-GROS-MONTANT       → -5 % : commande ≥ 500 CHF
+     [Appliquee    ] CMD-VOLUME-PAPETERIE   → -8 % : 22 articles Papeterie
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (10+5+3+5+8 = 31 % plafonné à 30 % de 550.20 = 165.06, arrondi 165.05)
+──────────────────────────────────────────────────────────────────────
+ CMD-007  09.10.2026  Gaëlle Morel (Employe, 11 cmd)
+   Montant brut      :     228.90 CHF
+   ✔ retenue         : -20 % [exclusive] : remise collaborateur
+   ✘ écartée         : -5 % : fidélité (11 commandes)
+   ✘ écartée         : -3 % : ancienneté (client depuis le 01.09.2022)
+   ℹ Offre exclusive « remise collaborateur » (45.78 CHF) plus avantageuse que le cumul (18.31 CHF).
+   Remise            :      45.80 CHF (20.01 %)
+   Montant net       :     183.10 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [Appliquee    ] CLIENT-EMPLOYE         → -20 % [exclusive] : remise collaborateur
+     [NonApplicable] CLIENT-PREMIUM
+     [Appliquee    ] CLIENT-FIDELE          → -5 % : fidélité (11 commandes)
+     [Appliquee    ] CLIENT-ANCIENNETE      → -3 % : ancienneté (client depuis le 01.09.2022)
+     [NonApplicable] CMD-GROS-MONTANT
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (Collaborateur 20 % (45.78) > cumul fidélité+ancienneté 8 % (18.31))
+──────────────────────────────────────────────────────────────────────
+ CMD-008  20.10.2026  David Rossi (Standard, 15 cmd)  code « AUTOMNE15 »
+   Montant brut      :     300.00 CHF
+   ✔ retenue         : -15 % [exclusive] : code AUTOMNE15
+   ✘ écartée         : -5 % : fidélité (15 commandes)
+   ℹ Offre exclusive « code AUTOMNE15 » (45.00 CHF) plus avantageuse que le cumul (15.00 CHF).
+   Remise            :      45.00 CHF (15 %)
+   Montant net       :     255.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [NonApplicable] CLIENT-PREMIUM
+     [Appliquee    ] CLIENT-FIDELE          → -5 % : fidélité (15 commandes)
+     [NonApplicable] CLIENT-ANCIENNETE
+     [NonApplicable] CMD-GROS-MONTANT
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [Appliquee    ] PROMO-AUTOMNE15        → -15 % [exclusive] : code AUTOMNE15
+   Attendu           : OK (AUTOMNE15 exclusif (45.00) > fidélité 5 % (15.00))
+──────────────────────────────────────────────────────────────────────
+ CMD-009  10.09.2026  Hugo Lambert (Standard, 3 cmd)  code « AUTOMNE15 »
+   Montant brut      :      80.20 CHF
+   ℹ Aucune règle de remise ne s'applique.
+   Remise            :       0.00 CHF (0 %)
+   Montant net       :      80.20 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [NonApplicable] CLIENT-PREMIUM
+     [NonApplicable] CLIENT-FIDELE
+     [NonApplicable] CLIENT-ANCIENNETE
+     [NonApplicable] CMD-GROS-MONTANT
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (Code AUTOMNE15 utilisé avant le début de la campagne)
+──────────────────────────────────────────────────────────────────────
+ CMD-010  02.11.2026  Emma Dubois (Premium, 12 cmd)  code « AUTOMNE15 »
+   Montant brut      :     700.00 CHF
+   ✔ retenue         : -10 % : client Premium
+   ✔ retenue         : -5 % : fidélité (12 commandes)
+   ✔ retenue         : -5 % : commande ≥ 500 CHF
+   ✘ écartée         : -15 % [exclusive] : code AUTOMNE15
+   ℹ Cumul des offres (140.00 CHF) au moins aussi avantageux que l'offre exclusive « code AUTOMNE15 » (105.00 CHF).
+   Remise            :     140.00 CHF (20 %)
+   Montant net       :     560.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [Appliquee    ] CLIENT-PREMIUM         → -10 % : client Premium
+     [Appliquee    ] CLIENT-FIDELE          → -5 % : fidélité (12 commandes)
+     [NonApplicable] CLIENT-ANCIENNETE
+     [Appliquee    ] CMD-GROS-MONTANT       → -5 % : commande ≥ 500 CHF
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [Appliquee    ] PROMO-AUTOMNE15        → -15 % [exclusive] : code AUTOMNE15
+   Attendu           : OK (Cumul 20 % (140.00) > AUTOMNE15 exclusif (105.00))
+──────────────────────────────────────────────────────────────────────
+ CMD-011  10.10.2026  Alice Martin (Standard, 2 cmd)  code « PROMO99 »
+   Montant brut      :      95.50 CHF
+   ℹ Aucune règle de remise ne s'applique.
+   Remise            :       0.00 CHF (0 %)
+   Montant net       :      95.50 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [NonApplicable] CLIENT-PREMIUM
+     [NonApplicable] CLIENT-FIDELE
+     [NonApplicable] CLIENT-ANCIENNETE
+     [NonApplicable] CMD-GROS-MONTANT
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (Code promo inconnu : aucune remise)
+──────────────────────────────────────────────────────────────────────
+ CMD-012  11.10.2026  Hugo Lambert (Standard, 3 cmd)  code « BIENVENUE10 »
+   Montant brut      :      45.00 CHF
+   ℹ Aucune règle de remise ne s'applique.
+   Remise            :       0.00 CHF (0 %)
+   Montant net       :      45.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [NonApplicable] CLIENT-PREMIUM
+     [NonApplicable] CLIENT-FIDELE
+     [NonApplicable] CLIENT-ANCIENNETE
+     [NonApplicable] CMD-GROS-MONTANT
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (BIENVENUE10 refusé : le client a déjà passé 3 commandes)
+──────────────────────────────────────────────────────────────────────
+ CMD-013  12.10.2026  David Rossi (Standard, 15 cmd)
+   Montant brut      :     500.00 CHF
+   ✔ retenue         : -5 % : fidélité (15 commandes)
+   ✔ retenue         : -5 % : commande ≥ 500 CHF
+   Remise            :      50.00 CHF (10 %)
+   Montant net       :     450.00 CHF
+   Trace :
+     [NonApplicable] EXCL-IMPAYES
+     [NonApplicable] EXCL-MONTANT-MIN
+     [NonApplicable] CLIENT-EMPLOYE
+     [NonApplicable] CLIENT-PREMIUM
+     [Appliquee    ] CLIENT-FIDELE          → -5 % : fidélité (15 commandes)
+     [NonApplicable] CLIENT-ANCIENNETE
+     [Appliquee    ] CMD-GROS-MONTANT       → -5 % : commande ≥ 500 CHF
+     [NonApplicable] CMD-VOLUME-PAPETERIE
+     [NonApplicable] PROMO-BIENVENUE10
+     [NonApplicable] PROMO-AUTOMNE15
+   Attendu           : OK (Seuil gros montant atteint pile (500.00) : 5 + 5 = 10 %)
+══════════════════════════════════════════════════════════════════════
+ 13 commandes évaluées — 13/13 conformes au résultat attendu
+══════════════════════════════════════════════════════════════════════
+
+(code de sortie : 0)

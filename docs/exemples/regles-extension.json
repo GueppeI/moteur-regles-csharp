@@ -1,0 +1,27 @@
+{
+  // Politique commerciale appliquée au résultat des règles
+  "politique": {
+    "tauxMaximalCumule": 30,
+    "arrondiCinqCentimes": true
+  },
+
+  // Ordre d'évaluation : déterminé par la priorité de chaque règle, pas par l'ordre du fichier.
+  "regles": [
+    { "type": "ClientAvecImpayes" },
+    { "type": "MontantMinimum", "seuil": 30 },
+
+    { "type": "Employe", "taux": 20 },
+    { "type": "ClientPremium", "taux": 10 },
+    { "type": "ClientFidele", "nombreCommandesMin": 10, "taux": 5 },
+    { "type": "Anciennete", "annees": 3, "taux": 3 },
+
+    { "type": "GrosseCommande", "seuil": 500, "taux": 5 },
+    { "type": "QuantiteCategorie", "categorie": "Papeterie", "quantiteMin": 4, "taux": 8 },
+
+    { "type": "CodePromo", "code": "BIENVENUE10", "montant": 10, "premiereCommandeUniquement": true },
+    { "type": "CodePromo", "code": "AUTOMNE15", "taux": 15, "cumulable": false, "debut": "2026-09-22", "fin": "2026-12-20" },
+
+    // Règle activée ici (actif: true) sans aucune recompilation.
+    { "type": "QuantiteCategorie", "categorie": "Electronique", "quantiteMin": 3, "taux": 4, "actif": true }
+  ]
+}
